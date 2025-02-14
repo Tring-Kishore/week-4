@@ -1,0 +1,32 @@
+.inputField{
+  width: 200px;
+  height: 38px;
+  background: none;
+  border: none;
+}
+.form{
+  text-align: center;
+  background-color: lightgrey;
+}
+.button{
+  width: 40px;
+  height: 40px;
+  margin-left: 20px;
+  background: none;
+}
+.buttonField{
+  width: 140px;
+    height: 45px;
+    background-color: #c2d8a1;
+    border-radius: 22px;
+    font-size: large;
+    font-weight: 500;
+    border: none;
+}
+
+.main{
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  
+}
