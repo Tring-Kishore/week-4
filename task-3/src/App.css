@@ -1,0 +1,28 @@
+.App {
+  padding: 20px;
+}
+
+
+form label {
+  display: inline;
+  margin: 10px 0 5px;
+}
+
+form button {
+  margin-right: 10px;
+}
+
+table {
+  width: 80%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+table th {
+  background-color: #f2f2f2;
+}
