@@ -1,0 +1,25 @@
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Adjust 300px as needed */
+  padding: 10px;
+  justify-content: center;
+  gap: 20px;
+
+}
+.card{
+  width: 400px;
+  height: 400px;
+  background-color: bisque;
+  color: black;
+  border: 2px solid black;
+  border-radius: 15px;
+  text-align: center;
+}
+.card-body{
+  width: 350px;
+  height: 350px;
+  text-align: center;
+}
+h2{
+  text-align: center;
+}
