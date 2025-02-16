@@ -1,0 +1,37 @@
+.form-container{
+    width: 300px;
+    height: 705px;
+    position: relative;
+    left: 45%;
+    /* border: 2px solid black; */
+}
+/* .form-container .heading{
+    text-align: center;
+} */
+.form-group{
+    padding: 15px;
+}
+.form-container .form-group input{
+    width: 245px;
+    height: 34px;
+    border: none;
+    outline: none;
+}
+.form-container .form-group .labels{
+    position: relative;
+    bottom: 15px;
+}
+.form-container .aligns{
+    text-align: left;
+}
+.form-container .form-group p{
+    color: red;
+}
+.btn-div .btn{
+    width: 200px;
+    height: 38px;
+    font-size: 19px;
+    background-color: #cfe2a9;
+    border-radius: 23px;
+    border: none;
+}

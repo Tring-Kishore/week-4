@@ -1,0 +1,47 @@
+.main-content{
+    width: 100%;
+    height:650px;
+    background-color: #dcdcdc66;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.outer-class{
+    background-color: white;
+    width: 70%;
+    height: 450px;
+    padding: 30px;
+}
+.add-persona-btn{
+    display: flex;
+    justify-content: end;
+}
+.btn-persona{
+    width: 100px;
+    height: 50px;
+    background-color: rgb(182, 212, 213);
+    font-weight: 700;
+}
+.card-list .row{
+    display: flex;
+    padding: 10px;
+    overflow-x: scroll;
+    gap: 15px;
+}
+
+.card-list .row::-webkit-scrollbar{
+    display: none;
+}
+.card .section-1{
+    height: 150px;
+    /* background-color: black; */
+}
+.card{
+    min-width: 300px;
+    width: 300px;
+    height: 300px;
+    background-color: #80808014;
+}
+.card .section-2{
+    padding: 15px;
+}
