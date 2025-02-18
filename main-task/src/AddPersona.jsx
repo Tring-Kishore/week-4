@@ -13,25 +13,48 @@ const AddPersona = () => {
     };
 
     const { addPersona } = useContext(UserContext);
-    const [personaData, setPersonaData] = useState({name: "",quote: "",description: "",attitudes: "",painPoints: "",jobNeeds: "",activities: "",image: defaultImage,});
+    const [personaData, setPersonaData] = useState({
+        name: "",
+        quote: "",
+        description: "",
+        attitudes: "",
+        painPoints: "",
+        jobNeeds: "",
+        activities: "",
+        image: defaultImage,
+    });
 
     const handleInputChanges = (e, field) => {
         setPersonaData((prevData) => ({ ...prevData, [field]: e.target.value }));
     };
 
-    const handleRichTextChange = (value, field) => {
-        setPersonaData((prevData) => ({ ...prevData, [field]: value }));
+    const handleRichTextChange = (value) => {
+        const content = new DOMParser().parseFromString(value, 'text/html');
+        const ans = content.body.textContent;
+        return ans;
     };
+    const setData = (value,field) =>{
+        setPersonaData((prevData) => ({ ...prevData, [field]: value }));
+        setRichTextState({painPoints:false,jobNeeds:false,activities:false});
 
+    }
     const [previewImage, setPreviewImage] = useState(null);
     const [editImageState, setEditImageState] = useState(false);
     const [savedImage, setSavedImage] = useState(null);
     const [formSubmitted, setFormSubmitted] = useState(false);
 
+    // Separate richTextState for each field
+    const [richTextState, setRichTextState] = useState({
+        painPoints: false,
+        jobNeeds: false,
+        activities: false,
+    });
+
     const handleImageEdit = (value) => {
+        setPreviewImage(defaultImage);
         setEditImageState(value);
     };
-    
+
     const handleSaveImage = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -131,17 +154,61 @@ const AddPersona = () => {
                         <div className='row-2'>
                             <div className="col">
                                 <label htmlFor="">Pain Point</label>
-                                <ReactQuill theme="snow" value={personaData.painPoints} onChange={(value) => handleRichTextChange(value, "painPoints")} placeholder="What are the highest challenges that the persona faces in their lab?" />
+                                {!richTextState.painPoints && (
+                                    <textarea
+                                        value={handleRichTextChange(personaData.painPoints)}
+                                        onClick={() => setRichTextState((prev) => ({ ...prev, painPoints: true,activities:false,jobNeeds:false }))}
+                                        placeholder="What are the highest challenges that the persona faces in their lab?"
+                                    />
+                                )}
+                                {richTextState.painPoints && (
+                                    <ReactQuill
+                                        theme="snow"
+                                        value={personaData.painPoints}
+                                        onChange={(value) => setPersonaData((prev) => ({ ...prev, painPoints: value }))}
+                                        placeholder="What are the highest challenges that the persona faces in their lab?"
+                                    />
+                                )}
                                 {formSubmitted && !personaData.painPoints && <p className='error'>Pain Points is required</p>}
                             </div>
                             <div className="col">
                                 <label htmlFor="">Jobs / Needs</label>
-                                <ReactQuill className='quill' theme="snow" value={personaData.jobNeeds} onChange={(value) => handleRichTextChange(value, "jobNeeds")} placeholder="What are the Persona functional social and emotional needs to be successful" />
+                                {!richTextState.jobNeeds && (
+                                    <textarea
+                                        value={handleRichTextChange(personaData.jobNeeds)}
+                                        onClick={() => setRichTextState((prev) => ({ ...prev, jobNeeds: true,painPoints:false,activities:false }))}
+                                        placeholder="What are the Persona functional social and emotional needs to be successful"
+                                    />
+                                )}
+                                {richTextState.jobNeeds && (
+                                    <ReactQuill
+                                        className='quill'
+                                        theme="snow"
+                                        value={personaData.jobNeeds}
+                                        onChange={(value) => setPersonaData((prev) => ({ ...prev, jobNeeds: value }))}
+                                        placeholder="What are the Persona functional social and emotional needs to be successful"
+                                    />
+                                )}
                                 {formSubmitted && !personaData.jobNeeds && <p className='error'>Job Needs is Required</p>}
                             </div>
                             <div className="col">
                                 <label htmlFor="">Activities</label>
-                                <ReactQuill className='quill' theme="snow" value={personaData.activities} onChange={(value) => handleRichTextChange(value, "activities")} placeholder="What does the persona like to do in their free time?" />
+                                {!richTextState.activities && (
+                                    <textarea
+                                        value={handleRichTextChange(personaData.activities)}
+                                        onClick={() => setRichTextState((prev) => ({ ...prev, activities: true,painPoints:false,jobNeeds:false }))}
+                                        placeholder="What does the persona like to do in their free time?"
+                                    />
+                                )}
+                                {richTextState.activities && (
+                                    <ReactQuill
+                                        className='quill'
+                                        theme="snow"
+                                        value={personaData.activities}
+                                        onChange={(value) => setPersonaData((prev) => ({ ...prev, activities: value }))}
+                                        placeholder="What does the persona like to do in their free time?"
+                                    />
+                                )}
                                 {formSubmitted && !personaData.activities && <p className='error'>Activities is required</p>}
                             </div>
                         </div>

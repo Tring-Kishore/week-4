@@ -29,6 +29,11 @@ const EditPersona = () => {
     const [deleteCardState, setDeleteCardState] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
     const [formSubmitted, setFormSubmitted] = useState(false);
+    const [richTextState, setRichTextState] = useState({
+        painPoints: false,
+        jobNeeds: false,
+        activities: false,
+    });
 
     useEffect(() => {
         if (personaToEdit) {
@@ -41,8 +46,15 @@ const EditPersona = () => {
         setPersonaData((prevData) => ({ ...prevData, [field]: e.target.value }));
     };
 
-    const handleRichTextChange = (value, field) => {
+    const handleSaveData = (value, field) => {
+        
         setPersonaData((prevData) => ({ ...prevData, [field]: value }));
+    };
+
+    const handleRichTextChange = (value) => {
+        const content = new DOMParser().parseFromString(value, 'text/html');
+        const ans = content.body.textContent;
+        return ans;
     };
 
     const handleImageEdit = (value) => {
@@ -60,10 +72,8 @@ const EditPersona = () => {
             if (extFile === "jpg" || extFile === "jpeg" || extFile === "png") {
                 const imageUrl = URL.createObjectURL(file);
                 setPreviewImage(imageUrl);
-                return true;
             } else {
                 alert("Please upload a valid image file (JPG, JPEG, or PNG).");
-                return false;
             }
         }
     };
@@ -79,14 +89,19 @@ const EditPersona = () => {
 
     const validateFields = () => {
         const requiredFields = ['name', 'quote', 'description', 'attitudes', 'painPoints', 'jobNeeds', 'activities'];
-        const isValid = requiredFields.every((field) => personaData[field].trim() !== "");
+        const isValid = requiredFields.every((field) => {
+            const value = personaData[field];
+            // Strip HTML tags for validation
+            const strippedValue = value.replace(/<[^>]+>/g, '').trim();
+            return strippedValue !== "";
+        });
         return isValid;
     };
 
     const handleEditPersona = () => {
-        setFormSubmitted(true); // Mark form as submitted
+        setFormSubmitted(true);
         if (validateFields()) {
-            editPersona(parseInt(index), personaData); // Update the persona in the context
+            editPersona(parseInt(index), personaData);
             navigate('/Persona');
         } else {
             console.log("Validation Failed");
@@ -141,8 +156,8 @@ const EditPersona = () => {
                     <div className="upload-btn">
                         <label htmlFor="">Are You Sure You Want to Delete this card?</label>
                         <div className='btn-sections'>
-                            <button onClick={() => handleDeleteState(false)}>Cancel</button>
-                            <button onClick={handleDeleteCard}>Delete</button>
+                            <button onClick={() => handleDeleteState(false)} style={{ backgroundColor: '#5f9ea078' }}>Cancel</button>
+                            <button onClick={handleDeleteCard} style={{ backgroundColor: '#ed143d7a' }}>Delete</button>
                         </div>
                     </div>
                 </div>
@@ -158,7 +173,7 @@ const EditPersona = () => {
                                 value={personaData.name}
                                 onChange={(e) => handleInputChanges(e, "name")}
                             />
-                            {formSubmitted && !personaData.name && <p className='error'>Name is Required</p>}
+                            {formSubmitted && !personaData.name.trim() && <p className='error'>Name is Required</p>}
                         </div>
                         <div className="upload-img-btn">
                             <button className='btn-upload' onClick={() => handleImageEdit(true)}>
@@ -180,7 +195,7 @@ const EditPersona = () => {
                                     value={personaData.quote}
                                     onChange={(e) => handleInputChanges(e, "quote")}
                                 ></textarea>
-                                {formSubmitted && !personaData.quote && <p className='error'>Quote is Required</p>}
+                                {formSubmitted && !personaData.quote.trim() && <p className='error'>Quote is Required</p>}
                             </div>
                             <div className="col">
                                 <label htmlFor="">Description</label>
@@ -189,7 +204,7 @@ const EditPersona = () => {
                                     value={personaData.description}
                                     onChange={(e) => handleInputChanges(e, "description")}
                                 ></textarea>
-                                {formSubmitted && !personaData.description && <p className='error'>Description is Required</p>}
+                                {formSubmitted && !personaData.description.trim() && <p className='error'>Description is Required</p>}
                             </div>
                             <div className="col">
                                 <label htmlFor="">Attitudes/Motivations</label>
@@ -198,24 +213,63 @@ const EditPersona = () => {
                                     value={personaData.attitudes}
                                     onChange={(e) => handleInputChanges(e, "attitudes")}
                                 ></textarea>
-                                {formSubmitted && !personaData.attitudes && <p className='error'>Attitudes is Required</p>}
+                                {formSubmitted && !personaData.attitudes.trim() && <p className='error'>Attitudes is Required</p>}
                             </div>
                         </div>
                         <div className='row-2'>
                             <div className="col">
                                 <label htmlFor="">Pain Point</label>
-                                <ReactQuill className='quill' theme="snow" value={personaData.painPoints} onChange={(value) => handleRichTextChange(value, "painPoints")} placeholder="What are the highest challenges that the persona faces in their lab?" />
-                                {formSubmitted && !personaData.painPoints && <p className='error'>Pain Points is Required</p>}
+                                {!richTextState.painPoints ? (
+                                    <textarea
+                                        value={handleRichTextChange(personaData.painPoints)}
+                                        onClick={() => setRichTextState({ painPoints: true, jobNeeds: false, activities: false })}
+                                        placeholder="What are the highest challenges that the persona faces in their lab?"
+                                    />
+                                ) : (
+                                    <ReactQuill
+                                        theme="snow"
+                                        value={personaData.painPoints}
+                                        onChange={(value) => handleSaveData(value, "painPoints")}
+                                        placeholder="What are the highest challenges that the persona faces in their lab?"
+                                    />
+                                )}
+                                {formSubmitted && !personaData.painPoints.replace(/<[^>]+>/g, '').trim() && <p className='error'>Pain Points is Required</p>}
                             </div>
                             <div className="col">
                                 <label htmlFor="">Jobs / Needs</label>
-                                <ReactQuill className='quill' theme="snow" value={personaData.jobNeeds} onChange={(value) => handleRichTextChange(value, "jobNeeds")} placeholder="What are the Persona functional social and emotional needs to be successful" />
-                                {formSubmitted && !personaData.jobNeeds && <p className='error'>Job Needs is Required</p>}
+                                {!richTextState.jobNeeds ? (
+                                    <textarea
+                                        value={handleRichTextChange(personaData.jobNeeds)}
+                                        onClick={() => setRichTextState({ jobNeeds: true, painPoints: false, activities: false })}
+                                        placeholder="What are the Persona functional social and emotional needs to be successful"
+                                    />
+                                ) : (
+                                    <ReactQuill
+                                        theme="snow"
+                                        value={personaData.jobNeeds}
+                                        onChange={(value) => handleSaveData(value, "jobNeeds")}
+                                        placeholder="What are the Persona functional social and emotional needs to be successful"
+                                    />
+                                )}
+                                {formSubmitted && !personaData.jobNeeds.replace(/<[^>]+>/g, '').trim() && <p className='error'>Job Needs is Required</p>}
                             </div>
                             <div className="col">
                                 <label htmlFor="">Activities</label>
-                                <ReactQuill className='quill' theme="snow" value={personaData.activities} onChange={(value) => handleRichTextChange(value, "activities")} placeholder="What does the persona like to do in their free time?" />
-                                {formSubmitted && !personaData.activities && <p className='error'>Activities is Required</p>}
+                                {!richTextState.activities ? (
+                                    <textarea
+                                        value={handleRichTextChange(personaData.activities)}
+                                        onClick={() => setRichTextState({ activities: true, painPoints: false, jobNeeds: false })}
+                                        placeholder="What does the persona like to do in their free time?"
+                                    />
+                                ) : (
+                                    <ReactQuill
+                                        theme="snow"
+                                        value={personaData.activities}
+                                        onChange={(value) => handleSaveData(value, "activities")}
+                                        placeholder="What does the persona like to do in their free time?"
+                                    />
+                                )}
+                                {formSubmitted && !personaData.activities.replace(/<[^>]+>/g, '').trim() && <p className='error'>Activities is Required</p>}
                             </div>
                         </div>
                     </div>
