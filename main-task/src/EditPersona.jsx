@@ -1,13 +1,15 @@
 import React, { useContext, useState, useEffect } from 'react';
-import './AddPersona.css';
+import './EditPersona.css';
 import defaultImage from './Banner.png';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UserContext } from './UserContext';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Import the styles
 
 const EditPersona = () => {
     const navigate = useNavigate();
-    const { index } = useParams(); 
-    const { personas, editPersona } = useContext(UserContext); 
+    const { index } = useParams();
+    const { personas, editPersona, deletePersona } = useContext(UserContext);
 
     const personaToEdit = personas[parseInt(index)];
 
@@ -24,6 +26,9 @@ const EditPersona = () => {
 
     const [editImageState, setEditImageState] = useState(false);
     const [savedImage, setSavedImage] = useState(personaToEdit?.image || null);
+    const [deleteCardState, setDeleteCardState] = useState(false);
+    const [previewImage, setPreviewImage] = useState(null);
+    const [formSubmitted, setFormSubmitted] = useState(false);
 
     useEffect(() => {
         if (personaToEdit) {
@@ -36,39 +41,109 @@ const EditPersona = () => {
         setPersonaData((prevData) => ({ ...prevData, [field]: e.target.value }));
     };
 
+    const handleRichTextChange = (value, field) => {
+        setPersonaData((prevData) => ({ ...prevData, [field]: value }));
+    };
+
     const handleImageEdit = (value) => {
         setEditImageState(value);
+        if (!value) {
+            setPreviewImage(null);
+        }
     };
 
     const handleSaveImage = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setSavedImage(imageUrl);
-            setPersonaData((prevData) => ({ ...prevData, image: imageUrl }));
+            const lastOccurenceOfDot = file.name.lastIndexOf(".") + 1;
+            const extFile = file.name.substr(lastOccurenceOfDot, file.name.length).toLowerCase();
+            if (extFile === "jpg" || extFile === "jpeg" || extFile === "png") {
+                const imageUrl = URL.createObjectURL(file);
+                setPreviewImage(imageUrl);
+                return true;
+            } else {
+                alert("Please upload a valid image file (JPG, JPEG, or PNG).");
+                return false;
+            }
         }
+    };
+
+    const closeEditImagePopup = (value) => {
+        if (value === false && previewImage) {
+            setSavedImage(previewImage);
+            setPersonaData((prevData) => ({ ...prevData, image: previewImage }));
+        }
+        setPreviewImage(null);
         handleImageEdit(false);
     };
 
+    const validateFields = () => {
+        const requiredFields = ['name', 'quote', 'description', 'attitudes', 'painPoints', 'jobNeeds', 'activities'];
+        const isValid = requiredFields.every((field) => personaData[field].trim() !== "");
+        return isValid;
+    };
+
     const handleEditPersona = () => {
-        if (personaToEdit) {
+        setFormSubmitted(true); // Mark form as submitted
+        if (validateFields()) {
             editPersona(parseInt(index), personaData); // Update the persona in the context
             navigate('/Persona');
+        } else {
+            console.log("Validation Failed");
         }
+    };
+
+    const handleDeleteState = (value) => {
+        setDeleteCardState(value);
+    };
+
+    const handleDeleteCard = () => {
+        const oldData = [...personas];
+        oldData.splice(parseInt(index), 1);
+        deletePersona(oldData);
+        console.log("Deleted Successfully");
+        navigate('/Persona');
+    };
+
+    const triggerFileInput = () => {
+        document.getElementById('fileInput').click();
     };
 
     const goBackToPersona = () => {
         navigate('/Persona');
     };
 
+    const settingDefaultImage = () => {
+        setPreviewImage(defaultImage);
+    };
+
     return (
         <div>
             {editImageState && (
-                <div className='popup'>
+                <div className='popups'>
                     <div className="upload-btn">
+                        <img src={previewImage || personaData.image} style={{ height: '225px', width: '562px', objectFit: 'cover' }} alt="Preview" />
                         <label htmlFor="">Choose an image:</label>
-                        <input type="file" onChange={(e) => handleSaveImage(e)} />
-                        <button onClick={() => handleImageEdit(false)}>Cancel</button>
+                        <button type="button" onClick={triggerFileInput} className='upload-img-btn'>Upload Image</button>
+                        <input type="file" id="fileInput" style={{ display: 'none' }} accept="image/*" onChange={handleSaveImage} />
+                        <div className='buttons-popup'>
+                            <button className='setDefaultImage' onClick={settingDefaultImage}>Delete</button>
+                            <div className='closesavebtn'>
+                                <button className='cancels' onClick={() => handleImageEdit(false)}>Cancel</button>
+                                <button onClick={() => closeEditImagePopup(false)} className='saves-btn'>Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {deleteCardState && (
+                <div className='popup delete-popup'>
+                    <div className="upload-btn">
+                        <label htmlFor="">Are You Sure You Want to Delete this card?</label>
+                        <div className='btn-sections'>
+                            <button onClick={() => handleDeleteState(false)}>Cancel</button>
+                            <button onClick={handleDeleteCard}>Delete</button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -83,6 +158,7 @@ const EditPersona = () => {
                                 value={personaData.name}
                                 onChange={(e) => handleInputChanges(e, "name")}
                             />
+                            {formSubmitted && !personaData.name && <p className='error'>Name is Required</p>}
                         </div>
                         <div className="upload-img-btn">
                             <button className='btn-upload' onClick={() => handleImageEdit(true)}>
@@ -100,71 +176,53 @@ const EditPersona = () => {
                             <div className="col">
                                 <label htmlFor="">Notable Quote</label>
                                 <textarea
-                                    name=""
-                                    id=""
                                     placeholder="Enter the text"
                                     value={personaData.quote}
                                     onChange={(e) => handleInputChanges(e, "quote")}
                                 ></textarea>
+                                {formSubmitted && !personaData.quote && <p className='error'>Quote is Required</p>}
                             </div>
                             <div className="col">
                                 <label htmlFor="">Description</label>
                                 <textarea
-                                    name=""
-                                    id=""
                                     placeholder="Enter a general Description/bio about the persona"
                                     value={personaData.description}
                                     onChange={(e) => handleInputChanges(e, "description")}
                                 ></textarea>
+                                {formSubmitted && !personaData.description && <p className='error'>Description is Required</p>}
                             </div>
                             <div className="col">
                                 <label htmlFor="">Attitudes/Motivations</label>
                                 <textarea
-                                    name=""
-                                    id=""
                                     placeholder="What drives and incentives the persona to reach desired goals? What mindset does the persona have?"
                                     value={personaData.attitudes}
                                     onChange={(e) => handleInputChanges(e, "attitudes")}
                                 ></textarea>
+                                {formSubmitted && !personaData.attitudes && <p className='error'>Attitudes is Required</p>}
                             </div>
                         </div>
                         <div className='row-2'>
                             <div className="col">
                                 <label htmlFor="">Pain Point</label>
-                                <textarea
-                                    name=""
-                                    id=""
-                                    placeholder='What are the highest challenges that the persona faces in their lab?'
-                                    value={personaData.painPoints}
-                                    onChange={(e) => handleInputChanges(e, "painPoints")}
-                                ></textarea>
+                                <ReactQuill className='quill' theme="snow" value={personaData.painPoints} onChange={(value) => handleRichTextChange(value, "painPoints")} placeholder="What are the highest challenges that the persona faces in their lab?" />
+                                {formSubmitted && !personaData.painPoints && <p className='error'>Pain Points is Required</p>}
                             </div>
                             <div className="col">
                                 <label htmlFor="">Jobs / Needs</label>
-                                <textarea
-                                    name=""
-                                    id=""
-                                    placeholder='What are the Persona functional social and emotional needs to be successful'
-                                    value={personaData.jobNeeds}
-                                    onChange={(e) => handleInputChanges(e, "jobNeeds")}
-                                ></textarea>
+                                <ReactQuill className='quill' theme="snow" value={personaData.jobNeeds} onChange={(value) => handleRichTextChange(value, "jobNeeds")} placeholder="What are the Persona functional social and emotional needs to be successful" />
+                                {formSubmitted && !personaData.jobNeeds && <p className='error'>Job Needs is Required</p>}
                             </div>
                             <div className="col">
                                 <label htmlFor="">Activities</label>
-                                <textarea
-                                    name=""
-                                    id=""
-                                    placeholder='What does the persona like to do in their free time?'
-                                    value={personaData.activities}
-                                    onChange={(e) => handleInputChanges(e, "activities")}
-                                ></textarea>
+                                <ReactQuill className='quill' theme="snow" value={personaData.activities} onChange={(value) => handleRichTextChange(value, "activities")} placeholder="What does the persona like to do in their free time?" />
+                                {formSubmitted && !personaData.activities && <p className='error'>Activities is Required</p>}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="last-section" style={{display:'flex' , justifyContent:'space-between'}}>
+                <div className="last-section" style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div className="delete-btn">
-                        <button className='btn' style={{width:'145px' ,height:'50px',color:'red',border:'none',background:'none',fontSize:'smaller',fontWeight:'700'}}>Delete</button>
+                        <button className='btn' onClick={() => handleDeleteState(true)} style={{ width: '145px', height: '50px', color: 'red', border: 'none', background: 'none', fontSize: 'smaller', fontWeight: '700' }}>Delete</button>
                     </div>
                     <div className='btns'>
                         <button className='close-btn' onClick={goBackToPersona}>CLOSE</button>
