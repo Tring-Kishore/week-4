@@ -94,3 +94,7 @@
   outline: none;
   resize: none;
 }
+.ql-container.ql-snow {
+    border: 1px solid #ccc;
+    height: 200px;
+}
