@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import {UserContext} from './UserContext';
 import Persona from './Persona';
 import { useNavigate } from 'react-router-dom';
-// import './LogIn.css'
+import './LogIn.css'
 const LogIn = () => {
   const navigate = useNavigate();
   const {checkUser} = useContext(UserContext);
@@ -26,13 +26,16 @@ const LogIn = () => {
       alert("Invalid email Or Password");
     }
   }
+  const goToSignUp = () =>{
+    navigate('/SignUp');
+  }
   return (
     <>
 
     <div>
       <div className="form-container">
-      <h2 className='heading'>Login Form</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
+      <h2 className='heading'>Login Form</h2>
             <div className="form-group">
               <div className='labels'>
               <label htmlFor="email">Email</label>
@@ -45,11 +48,13 @@ const LogIn = () => {
               <label htmlFor="password">Password</label>
               </div>
               <input type="password" id='password' placeholder='Enter the Password' {...register("password" , {required : "Password is required" , minLength : {value : 6 , message : "Password must atleast 6 letters"},})} />
-              {errors.password && <p>{errors.password.message}</p>}
+              {errors.password && <p className='error'>{errors.password.message}</p>}
             </div>
             <div className='btn-div'>
             <button className='btn' type='submit'>Login</button>
             </div>
+
+            <p>Don't You Have an Account ? <button className='lastsignup' onClick={goToSignUp}>Sign Up</button></p>
         </form>
       </div>
     </div>

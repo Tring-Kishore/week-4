@@ -22,12 +22,11 @@ const SignUp = () => {
     alert("Signup successfully!");
     goToLogInPage();
   };
-
   return (
     <>
     <div className="form-container">
-      <h2 className="heading">Sign Up</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <h2 className="heading">Sign Up</h2>
         <div className="aligns">
 
         <div className="form-group">
@@ -85,6 +84,7 @@ const SignUp = () => {
                 <button className="btn" type="submit">Sign Up</button>
             </div>
       </div>
+      <p>Have an account <button className="lastsignin" onClick={goToLogInPage} >Sign In ?</button></p>
       </form>
     </div>
     </>

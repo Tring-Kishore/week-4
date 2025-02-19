@@ -11,7 +11,6 @@ const AddPersona = () => {
     const goBackToPersona = () => {
         navigate('/Persona');
     };
-
     const { addPersona } = useContext(UserContext);
     const [personaData, setPersonaData] = useState({
         name: "",
@@ -28,16 +27,6 @@ const AddPersona = () => {
         setPersonaData((prevData) => ({ ...prevData, [field]: e.target.value }));
     };
 
-    const handleRichTextChange = (value) => {
-        const content = new DOMParser().parseFromString(value, 'text/html');
-        const ans = content.body.textContent;
-        return ans;
-    };
-    const setData = (value,field) =>{
-        setPersonaData((prevData) => ({ ...prevData, [field]: value }));
-        setRichTextState({painPoints:false,jobNeeds:false,activities:false});
-
-    }
     const [previewImage, setPreviewImage] = useState(null);
     const [editImageState, setEditImageState] = useState(false);
     const [savedImage, setSavedImage] = useState(null);
@@ -51,7 +40,7 @@ const AddPersona = () => {
     });
 
     const handleImageEdit = (value) => {
-        setPreviewImage(defaultImage);
+        setPreviewImage(savedImage ? savedImage : defaultImage);
         setEditImageState(value);
     };
 
@@ -82,7 +71,7 @@ const AddPersona = () => {
     };
 
     const handleAddPersona = () => {
-        setFormSubmitted(true); // Mark form as submitted
+        setFormSubmitted(true);
         if (validateFields()) {
             console.log("submitted values", personaData);
             addPersona(personaData);
@@ -100,7 +89,7 @@ const AddPersona = () => {
 
     return (
         <div>
-            {editImageState &&
+            {editImageState && (
                 <div className='popup'>
                     <div className="upload-btn">
                         <img src={previewImage || personaData.image} alt="" style={{ height: '225px', width: '562px', objectFit: 'cover' }} />
@@ -113,7 +102,7 @@ const AddPersona = () => {
                         </div>
                     </div>
                 </div>
-            }
+            )}
             <div className='addPersonaPage'>
                 <div className="image-container" style={{ backgroundImage: `url(${savedImage ? savedImage : defaultImage})` }}>
                     <div className='image-section'>
@@ -154,14 +143,27 @@ const AddPersona = () => {
                         <div className='row-2'>
                             <div className="col">
                                 <label htmlFor="">Pain Point</label>
-                                {!richTextState.painPoints && (
-                                    <textarea
-                                        value={handleRichTextChange(personaData.painPoints)}
-                                        onClick={() => setRichTextState((prev) => ({ ...prev, painPoints: true,activities:false,jobNeeds:false }))}
-                                        placeholder="What are the highest challenges that the persona faces in their lab?"
-                                    />
-                                )}
-                                {richTextState.painPoints && (
+                                {!richTextState.painPoints ? (
+                                    <div
+                                        className="textarea"
+                                        onClick={() =>
+                                            setRichTextState((prev) => ({
+                                                ...prev,
+                                                painPoints: true,
+                                                jobNeeds: false,
+                                                activities: false,
+                                            }))
+                                        }
+                                    >
+                                        {personaData.painPoints ? (
+                                            <div dangerouslySetInnerHTML={{ __html: personaData.painPoints }} />
+                                        ) : (
+                                            <span style={{ color: "#aaa" }}>
+                                                What are the highest challenges that the persona faces in their lab?
+                                            </span>
+                                        )}
+                                    </div>
+                                ) : (
                                     <ReactQuill
                                         theme="snow"
                                         value={personaData.painPoints}
@@ -173,14 +175,27 @@ const AddPersona = () => {
                             </div>
                             <div className="col">
                                 <label htmlFor="">Jobs / Needs</label>
-                                {!richTextState.jobNeeds && (
-                                    <textarea
-                                        value={handleRichTextChange(personaData.jobNeeds)}
-                                        onClick={() => setRichTextState((prev) => ({ ...prev, jobNeeds: true,painPoints:false,activities:false }))}
-                                        placeholder="What are the Persona functional social and emotional needs to be successful"
-                                    />
-                                )}
-                                {richTextState.jobNeeds && (
+                                {!richTextState.jobNeeds ? (
+                                    <div
+                                        className="textarea"
+                                        onClick={() =>
+                                            setRichTextState((prev) => ({
+                                                ...prev,
+                                                jobNeeds: true,
+                                                painPoints: false,
+                                                activities: false,
+                                            }))
+                                        }
+                                    >
+                                        {personaData.jobNeeds ? (
+                                            <div dangerouslySetInnerHTML={{ __html: personaData.jobNeeds }} />
+                                        ) : (
+                                            <span style={{ color: "#aaa" }}>
+                                                What are the Persona functional social and emotional needs to be successful
+                                            </span>
+                                        )}
+                                    </div>
+                                ) : (
                                     <ReactQuill
                                         className='quill'
                                         theme="snow"
@@ -193,14 +208,27 @@ const AddPersona = () => {
                             </div>
                             <div className="col">
                                 <label htmlFor="">Activities</label>
-                                {!richTextState.activities && (
-                                    <textarea
-                                        value={handleRichTextChange(personaData.activities)}
-                                        onClick={() => setRichTextState((prev) => ({ ...prev, activities: true,painPoints:false,jobNeeds:false }))}
-                                        placeholder="What does the persona like to do in their free time?"
-                                    />
-                                )}
-                                {richTextState.activities && (
+                                {!richTextState.activities ? (
+                                    <div
+                                        className="textarea"
+                                        onClick={() =>
+                                            setRichTextState((prev) => ({
+                                                ...prev,
+                                                activities: true,
+                                                painPoints: false,
+                                                jobNeeds: false,
+                                            }))
+                                        }
+                                    >
+                                        {personaData.activities ? (
+                                            <div dangerouslySetInnerHTML={{ __html: personaData.activities }} />
+                                        ) : (
+                                            <span style={{ color: "#aaa" }}>
+                                                What does the persona like to do in their free time?
+                                            </span>
+                                        )}
+                                    </div>
+                                ) : (
                                     <ReactQuill
                                         className='quill'
                                         theme="snow"
