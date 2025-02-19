@@ -36,7 +36,6 @@
 .popup .upload-btn button {
   font-size: 16px;
   padding: 10px 20px;
-  cursor: pointer;
   border: none;
   background-color: #f1f1f1;
   border-radius: 5px;
@@ -44,6 +43,7 @@
 
 .popup .upload-btn button:hover {
   background-color: #ddd;
+  cursor: pointer;
 }
 
 .popup input {
@@ -89,8 +89,20 @@
   padding-top: 2px;
   border-radius: 6px;
   margin-top: 22px;
-  font-size: smaller;
+  font-size: larger;
+  font-family: monospace;
   border: none;
   outline: none;
   resize: none;
+  color: fieldtext;
+}
+.ql-container.ql-snow {
+  border: 1px solid #ccc;
+  height: 200px;
+}
+.last-section .btns .close-btn:hover{
+  cursor: pointer;
+}
+.last-section .btns .add-btn:hover{
+  cursor: pointer;
 }

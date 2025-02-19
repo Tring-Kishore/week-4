@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from './UserContext';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import the styles
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const AddPersona = () => {
     const navigate = useNavigate();
     const goBackToPersona = () => {
@@ -54,7 +55,7 @@ const AddPersona = () => {
                 setPreviewImage(imageUrl);
                 return true;
             } else {
-                alert("Please upload a valid image file (JPG, JPEG, or PNG).");
+                imageInvalidToast();
                 return false;
             }
         }
@@ -79,6 +80,19 @@ const AddPersona = () => {
         } else {
             console.log("Validation failed");
         }
+    };
+
+
+    const imageInvalidToast = () => {
+        toast.error('Please upload a valid image file (JPG, JPEG, or PNG).', {
+          position: "top-center",
+          autoClose: 4000, // Toast will be displayed for 4 seconds
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+        });
     };
 
     const validateFields = () => {
@@ -251,6 +265,7 @@ const AddPersona = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer/>
         </div>
     );
 };

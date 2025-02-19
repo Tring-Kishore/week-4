@@ -16,11 +16,13 @@
     display: flex;
     justify-content: end;
 }
+
 .btn-persona{
     width: 100px;
     height: 50px;
     background-color: rgb(182, 212, 213);
     font-weight: 700;
+    cursor: pointer;
 }
 .card-list .row{
     display: flex;
@@ -58,4 +60,7 @@
     border: none;
     font-size: 18px;
     font-weight: 600;
+    margin-right: 35px;
+    cursor: pointer;
+
 }

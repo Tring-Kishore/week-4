@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import {UserContext} from './UserContext';
 import "./SignUp.css";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const SignUp = () => {
   const navigate = useNavigate();
   const {addUser} = useContext(UserContext);
@@ -15,12 +17,30 @@ const SignUp = () => {
     formState: { errors },
   } = useForm();
 
+  const alertForSignUp = () => {
+    toast.success('Signup successfully!', {
+      position: "top-center",
+      autoClose: 4000, 
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+    });
+
+    setTimeout(() => {
+      goToLogInPage();
+    }, 4100);
+  };
+  
+
+
   const onSubmit = (data) => {
     console.log(data); // Form data
     console.log(`the name is ${data.name}`);
     addUser(data);
-    alert("Signup successfully!");
-    goToLogInPage();
+    alertForSignUp();
+    // goToLogInPage();
   };
   return (
     <>
@@ -84,9 +104,10 @@ const SignUp = () => {
                 <button className="btn" type="submit">Sign Up</button>
             </div>
       </div>
-      <p>Have an account <button className="lastsignin" onClick={goToLogInPage} >Sign In ?</button></p>
+      <p>Have an account <button className="lastsignin" onClick={goToLogInPage} style={{cursor:'pointer'}} >Sign In ?</button></p>
       </form>
     </div>
+    <ToastContainer/>
     </>
   );
 };

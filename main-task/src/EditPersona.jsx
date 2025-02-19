@@ -5,7 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { UserContext } from './UserContext';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import the styles
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const EditPersona = () => {
     const navigate = useNavigate();
     const { index } = useParams();
@@ -64,6 +65,19 @@ const EditPersona = () => {
         }
     };
 
+
+    const imageInvalidToast = () => {
+            toast.error('Please upload a valid image file (JPG, JPEG, or PNG).', {
+              position: "top-center",
+              autoClose: 4000, // Toast will be displayed for 4 seconds
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: false,
+              progress: undefined,
+            });
+        };
+
     const handleSaveImage = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -73,7 +87,7 @@ const EditPersona = () => {
                 const imageUrl = URL.createObjectURL(file);
                 setPreviewImage(imageUrl);
             } else {
-                alert("Please upload a valid image file (JPG, JPEG, or PNG).");
+                imageInvalidToast();
             }
         }
     };
@@ -314,11 +328,12 @@ const EditPersona = () => {
                     <div className='btns'>
                         <button className='close-btn' onClick={goBackToPersona}>CLOSE</button>
                         <button className='add-btn' onClick={handleEditPersona}>
-                            EDIT PERSONA
+                            UPDATE PERSONA
                         </button>
                     </div>
                 </div>
             </div>
+            <ToastContainer/>
         </div>
     );
 };

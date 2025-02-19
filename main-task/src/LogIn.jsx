@@ -3,7 +3,9 @@ import { useForm } from 'react-hook-form'
 import {UserContext} from './UserContext';
 import Persona from './Persona';
 import { useNavigate } from 'react-router-dom';
-import './LogIn.css'
+import './LogIn.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const LogIn = () => {
   const navigate = useNavigate();
   const {checkUser} = useContext(UserContext);
@@ -13,17 +15,44 @@ const LogIn = () => {
   const goToPersona = () =>{
     navigate('/Persona');
   }
+
+  // alert + navigation
+  const alertForLogin = () => {
+    toast.success('Login successful!', {
+      position: "top-center",
+      autoClose: 4000, 
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+    });
+    setTimeout(() => {
+      goToPersona();
+    }, 4000);
+  };
+  const errorInvalidData = () => {
+    toast.error('Invalid email Or Password', {
+      position: "top-center",
+      autoClose: 4000, 
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+    });
+  };
+
   const onSubmit = (data) => {
     console.log(data);
     const {email,password} = data;
     if(checkUser(email,password))
     {
-      alert("Login Successfully");
-      goToPersona();
+      alertForLogin();
     }
     else
     {
-      alert("Invalid email Or Password");
+      errorInvalidData();
     }
   }
   const goToSignUp = () =>{
@@ -54,11 +83,11 @@ const LogIn = () => {
             <button className='btn' type='submit'>Login</button>
             </div>
 
-            <p>Don't You Have an Account ? <button className='lastsignup' onClick={goToSignUp}>Sign Up</button></p>
+            <p>Don't You Have an Account ? <button className='lastsignup' onClick={goToSignUp} style={{cursor:'pointer'}}>Sign Up</button></p>
         </form>
       </div>
     </div>
-
+    <ToastContainer/>
   </>  
   )
 }
