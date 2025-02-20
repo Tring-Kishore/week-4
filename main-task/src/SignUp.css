@@ -70,3 +70,9 @@
     border: none;
     
   }
+  .eye-btn{
+    position: relative;
+      left: 312px;
+      bottom: 28px;
+      cursor: pointer;
+  }

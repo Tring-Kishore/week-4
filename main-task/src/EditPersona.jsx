@@ -7,6 +7,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import the styles
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { toastMessage } from './ToastMessage';
 const EditPersona = () => {
     const navigate = useNavigate();
     const { index } = useParams();
@@ -67,15 +68,7 @@ const EditPersona = () => {
 
 
     const imageInvalidToast = () => {
-            toast.error('Please upload a valid image file (JPG, JPEG, or PNG).', {
-              position: "top-center",
-              autoClose: 4000, // Toast will be displayed for 4 seconds
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-            });
+        toastMessage("Please upload a valid image file (JPG, JPEG, or PNG).","error");
         };
 
     const handleSaveImage = (e) => {
@@ -152,7 +145,7 @@ const EditPersona = () => {
                 <div className='popups'>
                     <div className="upload-btn">
                         <img src={previewImage || personaData.image} style={{ height: '225px', width: '562px', objectFit: 'cover' }} alt="Preview" />
-                        <label htmlFor="">Choose an image:</label>
+                        {/* <label htmlFor="">Choose an image:</label> */}
                         <button type="button" onClick={triggerFileInput} className='upload-img-btn'>Upload Image</button>
                         <input type="file" id="fileInput" style={{ display: 'none' }} accept="image/*" onChange={handleSaveImage} />
                         <div className='buttons-popup'>
@@ -234,7 +227,7 @@ const EditPersona = () => {
                             <div className="col">
                                 <label htmlFor="">Pain Point</label>
                                 {!richTextState.painPoints ? (
-                                    <div className="textarea" onClick={() => setRichTextState((prev) => ({ ...prev, painPoints: true, jobNeeds: false, activities: false, }))}>
+                                    <div className="textarea" onClick={() => setRichTextState((prev) => ({ ...prev, painPoints: true, jobNeeds: false, activities: false, }))} style={{ overflowX: "hidden", overflowY:'auto', maxHeight: "200px" , maxWidth:"100%",scrollbarWidth: "none", msOverflowStyle: "none" , wordWrap:"break-word",whiteSpace:"normal"    }}>
                                         {personaData.painPoints ? (
                                             <div dangerouslySetInnerHTML={{ __html: personaData.painPoints }} />
                                         ) : (
@@ -265,6 +258,7 @@ const EditPersona = () => {
                                                 activities: false,
                                             }))
                                         }
+                                        style={{ overflowX: "hidden", overflowY:'auto', maxHeight: "200px" , maxWidth:"100%",scrollbarWidth: "none", msOverflowStyle: "none" , wordWrap:"break-word",whiteSpace:"normal"    }}
                                     >
                                         {personaData.jobNeeds ? (
                                             <div dangerouslySetInnerHTML={{ __html: personaData.jobNeeds }} />
@@ -298,6 +292,7 @@ const EditPersona = () => {
                                                 jobNeeds: false,
                                             }))
                                         }
+                                        style={{ overflowX: "hidden", overflowY:'auto', maxHeight: "200px" , maxWidth:"100%",scrollbarWidth: "none", msOverflowStyle: "none" , wordWrap:"break-word",whiteSpace:"normal"   }}
                                     >
                                         {personaData.activities ? (
                                             <div dangerouslySetInnerHTML={{ __html: personaData.activities }} />

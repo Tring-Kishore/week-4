@@ -7,13 +7,14 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import the styles
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { toastMessage } from './ToastMessage';
 const AddPersona = () => {
     const navigate = useNavigate();
-    const goBackToPersona = () => {
+    const goBackToPersona = () => {                                                 // Navigating to persona function
         navigate('/Persona');
     };
-    const { addPersona } = useContext(UserContext);
-    const [personaData, setPersonaData] = useState({
+    const { addPersona } = useContext(UserContext);                                 // getting function of addPersona from user context
+    const [personaData, setPersonaData] = useState({                                // setting persona data as empty
         name: "",
         quote: "",
         description: "",
@@ -24,7 +25,7 @@ const AddPersona = () => {
         image: defaultImage,
     });
 
-    const handleInputChanges = (e, field) => {
+    const handleInputChanges = (e, field) => {                                 // we change or adding values in input , it will update in personaData
         setPersonaData((prevData) => ({ ...prevData, [field]: e.target.value }));
     };
 
@@ -84,15 +85,7 @@ const AddPersona = () => {
 
 
     const imageInvalidToast = () => {
-        toast.error('Please upload a valid image file (JPG, JPEG, or PNG).', {
-          position: "top-center",
-          autoClose: 4000, // Toast will be displayed for 4 seconds
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-        });
+        toastMessage("Please upload a valid image file (JPG, JPEG, or PNG).","error");
     };
 
     const validateFields = () => {
@@ -107,7 +100,7 @@ const AddPersona = () => {
                 <div className='popup'>
                     <div className="upload-btn">
                         <img src={previewImage || personaData.image} alt="" style={{ height: '225px', width: '562px', objectFit: 'cover' }} />
-                        <label htmlFor="">Choose a image :</label>
+                        {/* <label htmlFor="">Choose a image :</label> */}
                         <button onClick={triggerFileInput}>Upload Image</button>
                         <input type="file" accept="image/*" id='fileInput' onChange={(e) => handleSaveImage(e)} style={{ display: 'none' }} />
                         <div className='buttons-btn'>
@@ -168,6 +161,7 @@ const AddPersona = () => {
                                                 activities: false,
                                             }))
                                         }
+                                        style={{ overflowX: "hidden", overflowY:'auto', maxHeight: "200px" , maxWidth:"100%",scrollbarWidth: "none", msOverflowStyle: "none", wordWrap:"break-word",whiteSpace:"normal"  }}
                                     >
                                         {personaData.painPoints ? (
                                             <div dangerouslySetInnerHTML={{ __html: personaData.painPoints }} />
@@ -176,6 +170,7 @@ const AddPersona = () => {
                                                 What are the highest challenges that the persona faces in their lab?
                                             </span>
                                         )}
+                                        
                                     </div>
                                 ) : (
                                     <ReactQuill
@@ -200,7 +195,7 @@ const AddPersona = () => {
                                                 activities: false,
                                             }))
                                         }
-                                    >
+                                        style={{ overflowX: "hidden", overflowY:'auto', maxHeight: "200px" , maxWidth:"100%",scrollbarWidth: "none", msOverflowStyle: "none" , wordWrap:"break-word",whiteSpace:"normal"    }}                                    >
                                         {personaData.jobNeeds ? (
                                             <div dangerouslySetInnerHTML={{ __html: personaData.jobNeeds }} />
                                         ) : (
@@ -233,7 +228,7 @@ const AddPersona = () => {
                                                 jobNeeds: false,
                                             }))
                                         }
-                                    >
+                                        style={{ overflowX: "hidden", overflowY:'auto', maxHeight: "200px" , maxWidth:"100%",scrollbarWidth: "none", msOverflowStyle: "none" , wordWrap:"break-word",whiteSpace:"normal"   }}                                    >
                                         {personaData.activities ? (
                                             <div dangerouslySetInnerHTML={{ __html: personaData.activities }} />
                                         ) : (
@@ -265,7 +260,7 @@ const AddPersona = () => {
                     </div>
                 </div>
             </div>
-            <ToastContainer/>
+            
         </div>
     );
 };
